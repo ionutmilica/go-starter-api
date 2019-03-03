@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"github.com/go-chi/chi"
+	"github.com/jmoiron/sqlx"
 	"log"
 	"net/http"
 	"os"
@@ -12,10 +13,21 @@ import (
 	"zgo/pkg/auth"
 	"zgo/pkg/hasher"
 	"zgo/pkg/persistence"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 func mkRouter() *chi.Mux {
 	r := chi.NewRouter()
+
+	db, err := sqlx.Open("mysql", "starter:secret@/starter")
+	if err != nil {
+		log.Fatalf("Cannot create database: %s", err.Error())
+	}
+
+	if err := db.Ping(); err != nil {
+		log.Fatalf("Cannot ping the database: %s", err.Error())
+	}
 
 	authenticator := auth.NewTokenAuthenticator(
 		persistence.NewMemoryUserPersistence(),
