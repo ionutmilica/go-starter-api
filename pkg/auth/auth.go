@@ -21,6 +21,7 @@ type PasswordHasher interface {
 // an authentication token
 type TokenGenerator interface {
 	GenerateToken(user *domain.User) (string, time.Time, error)
+	GetTokenType() string
 }
 
 // TokenAuthenticator is a service that performs the authentication
@@ -52,7 +53,7 @@ func (j *TokenAuthenticator) Authenticate(username, password string) (*domain.Au
 	}
 
 	return &domain.AuthToken{
-		TokenType:   "jwt", // For now
+		TokenType:   j.tokenGen.GetTokenType(),
 		AccessToken: token,
 		ExpiresAt:   expiresAt,
 	}, nil

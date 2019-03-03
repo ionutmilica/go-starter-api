@@ -35,6 +35,11 @@ func (j *JWTTokenGenerator) GenerateToken(user *domain.User) (string, time.Time,
 	return tk, expiresAt, err
 }
 
+// GetTokenType allows us to identify the algorithm of the token generator
+func (j *JWTTokenGenerator) GetTokenType() string {
+	return "JWT"
+}
+
 // NewJwtTokenGenerator is a constructor function for JWTTokenGenerator
 func NewJwtTokenGenerator(key string, lifetime time.Duration) *JWTTokenGenerator {
 	return &JWTTokenGenerator{
